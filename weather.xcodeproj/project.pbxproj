@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -45,7 +45,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		27AAE2F32CE8012F0053BE2B /* Exceptions for "weather" folder in "weather" target */ = {
+		27AAE2F32CE8012F0053BE2B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -55,24 +55,9 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		27AAE2CD2CE8012E0053BE2B /* weather */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				27AAE2F32CE8012F0053BE2B /* Exceptions for "weather" folder in "weather" target */,
-			);
-			path = weather;
-			sourceTree = "<group>";
-		};
-		27AAE2E42CE8012E0053BE2B /* weatherTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = weatherTests;
-			sourceTree = "<group>";
-		};
-		27AAE2EE2CE8012F0053BE2B /* weatherUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = weatherUITests;
-			sourceTree = "<group>";
-		};
+		27AAE2CD2CE8012E0053BE2B /* weather */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (27AAE2F32CE8012F0053BE2B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = weather; sourceTree = "<group>"; };
+		27AAE2E42CE8012E0053BE2B /* weatherTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = weatherTests; sourceTree = "<group>"; };
+		27AAE2EE2CE8012F0053BE2B /* weatherUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = weatherUITests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -242,6 +227,7 @@
 				};
 			};
 			buildConfigurationList = 27AAE2C62CE8012E0053BE2B /* Build configuration list for PBXProject "weather" */;
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -250,7 +236,6 @@
 			);
 			mainGroup = 27AAE2C22CE8012E0053BE2B;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			productRefGroup = 27AAE2CC2CE8012E0053BE2B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
