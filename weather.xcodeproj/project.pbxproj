@@ -423,6 +423,8 @@
 				DEVELOPMENT_TEAM = 6KV9MDGTA5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = weather/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Для локации";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для локации ";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -451,6 +453,8 @@
 				DEVELOPMENT_TEAM = 6KV9MDGTA5;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = weather/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Для локации";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Для локации ";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
