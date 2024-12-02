@@ -13,23 +13,9 @@ class HomeViewController: UIViewController{
     private let viewModel = HomeViewModel()
     var dayTime: DayTime?
     
-    lazy var locationLabel: UILabel = {
-        let label = UILabel()
-        label.textColor = .white
-        label.font = .systemFont(ofSize: 10)
-        return label
-    }()
-    
-    var locationButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Location", for: .normal)
-        button.addTarget(self, action: #selector (fetchUserLocation), for: .touchUpInside)
-        return button
-    }()
-    
     var citylabel: UILabel = {
         let label = UILabel()
-        label.text = "CityName"
+        label.isHidden = true
         label.textColor = .black
         label.font = .systemFont(ofSize: 30)
         return label
@@ -37,7 +23,7 @@ class HomeViewController: UIViewController{
     
     var cityTemp: UILabel = {
         let label = UILabel()
-        label.text="30°C"
+        label.isHidden = true
         label.textColor = .black
         label.font = .systemFont(ofSize: 60)
         return label
@@ -45,7 +31,7 @@ class HomeViewController: UIViewController{
     
     var feeling: UILabel = {
         let label = UILabel()
-        label.text = "Rain"
+        label.isHidden = true
         label.textColor = .black
         label.font = .systemFont(ofSize: 25)
         return label
@@ -57,15 +43,37 @@ class HomeViewController: UIViewController{
         button.addTarget(self, action: #selector (openSearchView), for: .touchUpInside)
         return button
     }()
-    
+        
     @objc private func openSearchView() {
         let searchVC = SearchViewController()
         let navigationController = UINavigationController(rootViewController: searchVC)
         present(navigationController, animated: true, completion: nil)
     }
     
-    @objc private func fetchUserLocation() {
-        viewModel.requestLocation()
+    private func fetchUserLocation() {
+        viewModel.loadWeather(){ result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    if let weatherInfo = self.viewModel.weatherInfo {
+                        self.citylabel.isHidden = false
+                        self.citylabel.text = weatherInfo.cityName
+                        self.cityTemp.isHidden = false
+                        self.cityTemp.text = "\(weatherInfo.temperature)°C"
+                        self.feeling.isHidden = false
+                        self.feeling.text = weatherInfo.condition
+                    }
+                case .failure(let error):
+                    self.showAlertModal(title: "Eroor", message: "\(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func showAlertModal(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -74,14 +82,11 @@ class HomeViewController: UIViewController{
         setupLayuot()
         getDayTime()
         getBackgroundImage()
-        viewModel.locationUpdate = { result in
-            switch result {
-            case .success(let coordinates):
-                self.locationLabel.text = ("\(coordinates.0),\(coordinates.1)")
-            case .failure(let error):
-                self.locationLabel.text = error.localizedDescription
-            }
-        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        fetchUserLocation()
     }
     
     func bindViews() {
@@ -90,8 +95,6 @@ class HomeViewController: UIViewController{
         view.addSubview(cityTemp)
         view.addSubview(feeling)
         view.addSubview(searchButton)
-        view.addSubview(locationButton)
-        view.addSubview(locationLabel)
     }
     
     func getBackgroundImage() {
@@ -137,14 +140,6 @@ class HomeViewController: UIViewController{
             make.trailing.equalToSuperview().inset(50)
             make.top.equalToSuperview().offset(100)
             make.height.width.equalTo(40)
-        }
-        locationButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(160)
-        }
-        locationLabel.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().offset(100)
         }
     }
 }
