@@ -6,6 +6,7 @@ target 'weather' do
   use_frameworks!
   
   pod 'SnapKit'
+  pod 'Moya', '~> 15.0'
   # Pods for weather
 
 

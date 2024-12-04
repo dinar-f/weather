@@ -17,6 +17,7 @@ struct WeatherInfo {
 class HomeViewModel {
     private let locationService = LocationService()
     private let weatherService = WeatherService()
+    private let anotherWeatherService = AnotherWeatherService()
     var weatherInfo: WeatherInfo?
     
     func loadWeather(completion: @escaping (Result<Void, Error>) -> Void) {
@@ -32,6 +33,7 @@ class HomeViewModel {
                     self.weatherInfo = WeatherInfo(cityName: cityName, temperature: roundedTemperature, feelsLike: roundedFeelsLike, condition: condition)
                     completion(.success(()))
                 case .failure(let error):
+                    print(error)
                     completion(.failure(error))
                 }
             }
