@@ -43,37 +43,36 @@ class HomeViewController: UIViewController{
         button.addTarget(self, action: #selector (openSearchView), for: .touchUpInside)
         return button
     }()
-        
-    @objc private func openSearchView() {
-        let searchVC = SearchViewController()
-        let navigationController = UINavigationController(rootViewController: searchVC)
-        present(navigationController, animated: true, completion: nil)
-    }
     
     private func fetchUserLocation() {
-        viewModel.loadWeather(){ result in
+        viewModel.getMainWeather(){ result in
             DispatchQueue.main.async {
                 switch result {
                 case .success:
                     if let weatherInfo = self.viewModel.weatherInfo {
-                        self.citylabel.isHidden = false
-                        self.citylabel.text = weatherInfo.cityName
-                        self.cityTemp.isHidden = false
-                        self.cityTemp.text = "\(weatherInfo.temperature)°C"
-                        self.feeling.isHidden = false
-                        self.feeling.text = weatherInfo.condition
+                        self.addWeatherDislaying(weatherInfo: weatherInfo)
                     }
                 case .failure(let error):
-                    self.showAlertModal(title: "Eroor", message: "\(error.localizedDescription)")
+                    AlertModalView.showAlert(on: self, title: "Eroor", message: "\(error.localizedDescription)")
                 }
             }
         }
     }
     
-    private func showAlertModal(title: String, message: String) {
-        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alertController, animated: true, completion: nil)
+    @objc private func openSearchView() {
+        let searchVC = SearchViewController()
+        let navigationController = UINavigationController(rootViewController: searchVC)
+        searchVC.delegate = self
+        present(navigationController, animated: true, completion: nil)
+    }
+    
+    private func addWeatherDislaying(weatherInfo: WeatherInfo) {
+        self.citylabel.isHidden = false
+        self.citylabel.text = weatherInfo.cityName
+        self.cityTemp.isHidden = false
+        self.cityTemp.text = "\(weatherInfo.temperature)°C"
+        self.feeling.isHidden = false
+        self.feeling.text = weatherInfo.condition
     }
     
     override func viewDidLoad() {
@@ -144,3 +143,19 @@ class HomeViewController: UIViewController{
     }
 }
 
+extension HomeViewController: SearchViewControllerDelegate {
+    func didSelectCity(latitude: Double, longitude: Double) {
+        viewModel.loadWeather(latitude: latitude, longitude: longitude) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success:
+                    if let weatherInfo = self.viewModel.weatherInfo {
+                        self.addWeatherDislaying(weatherInfo: weatherInfo)
+                    }
+                case .failure(let error):
+                    AlertModalView.showAlert(on: self, title: "Error", message: "\(error.localizedDescription)")
+                }
+            }
+        }
+    }
+}

@@ -7,6 +7,7 @@ target 'weather' do
   
   pod 'SnapKit'
   pod 'Moya', '~> 15.0'
+  pod 'DBDebugToolkit'
   # Pods for weather
 
 
