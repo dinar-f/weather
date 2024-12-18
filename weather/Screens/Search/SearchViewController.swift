@@ -13,14 +13,10 @@ protocol SearchViewControllerDelegate: AnyObject {
 }
 
 class SearchViewController: UIViewController {
-    private let viewModel = SearchViewModel()
+    let viewModel = SearchViewModel()
     weak var delegate : SearchViewControllerDelegate?
     
-    var citiesList: [CityInfo] = []
-    var tableView: UITableView = {
-        let tableView = UITableView()
-        return tableView
-    }()
+    var tableView = UITableView()
     
     var citySearchInput: UITextField = {
         let input = UITextField()
@@ -49,8 +45,7 @@ class SearchViewController: UIViewController {
         viewModel.getCitiesList(cityName: text){ result in
             switch result {
             case .success(let cities):
-                self.citiesList = cities
-                if self.citiesList.isEmpty && !text.isEmpty {
+                if cities.isEmpty && !text.isEmpty {
                     self.showMessage(message: "Не найдено совпадений")
                 } else {
                     self.messageLabel.isHidden = true
@@ -58,7 +53,8 @@ class SearchViewController: UIViewController {
                     self.tableView.reloadData()
                 }
             case .failure:
-                AlertModalView.showAlert(on: self, title: "Error", message: "Ошибка получения данных. Пожалуйста, попробуйте снова")
+                print(123)
+//                AlertModalView.showAlert(on: self, title: "Error", message: "Ошибка получения данных. Пожалуйста, попробуйте снова")
             }
         }
     }
@@ -102,26 +98,4 @@ class SearchViewController: UIViewController {
     }
 }
 
-extension SearchViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return citiesList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CityCell", for: indexPath) as! CityViewCell
-        let cityItem = citiesList[indexPath.row]
-        cell.cityNameLabel.text = cityItem.cityName
-        cell.regionLabel.text = cityItem.region
-        return cell
-    }
-}
-
-extension SearchViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedCity = citiesList[indexPath.row]
-        delegate?.didSelectCity(latitude: selectedCity.latitude, longitude: selectedCity.longitude)
-        tableView.deselectRow(at: indexPath, animated: true)
-        dismiss(animated: true, completion: nil)
-    }
-}
 

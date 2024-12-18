@@ -7,7 +7,7 @@
 
 class SearchViewModel {
     private let citiesService = CitiesService()
-    private var citiesList: [CityInfo] = []
+    var citiesList: [CityInfo] = []
     
     func getCitiesList(cityName: String, completion: @escaping (Result<[CityInfo], Error>) -> Void) {
         citiesService.getCities(query: cityName){ [weak self] result in
@@ -16,14 +16,18 @@ class SearchViewModel {
             case .success(let response):
                 self.citiesList = response.suggestions.compactMap { suggestion in
                     guard let cityName = suggestion.data.city,
-                          let region = suggestion.data.region_with_type,
-                          let latitudeString = suggestion.data.geo_lat,
-                          let longitudeString = suggestion.data.geo_lon else { return nil }
+                          let region = suggestion.data.region,
+                          let latitudeString = suggestion.data.latitude,
+                          let longitudeString = suggestion.data.longitude else { return nil }
                     
                     guard let latitude = Double(latitudeString),
                           let longitude = Double(longitudeString) else { return nil }
                     
-                    return CityInfo(cityName: cityName, latitude: latitude, longitude: longitude, region: region)
+                    return CityInfo(
+                        cityName: cityName,
+                        latitude: latitude,
+                        longitude: longitude,
+                        region: region)
                 }
                 completion(.success(self.citiesList))
             case .failure(let error):

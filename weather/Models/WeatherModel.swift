@@ -11,11 +11,16 @@ struct WeatherResponse: Decodable {
     let weather: [WeatherCondition]
 }
 
-struct Main: Decodable {
+struct Main : Codable {
     let temp: Double
-    let feels_like: Double
+    let feelsLike: Double
+    
+    private enum CodingKeys : String, CodingKey {
+        case temp, feelsLike = "feels_like"
+    }
 }
 
 struct WeatherCondition: Decodable {
     let main: String
 }
+

@@ -33,6 +33,11 @@ class CityViewCell: UITableViewCell  {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(cityInfo: CityInfo) {
+        cityNameLabel.text = cityInfo.cityName
+        regionLabel.text = cityInfo.region
+    }
+    
     func bindViews() {
         addSubview(cityNameLabel)
         addSubview(regionLabel)

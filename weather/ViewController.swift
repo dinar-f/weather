@@ -25,9 +25,9 @@ class ViewController: UITabBarController {
                 image: UIImage(systemName: "house.fill")
             ),
             generateViewContoller(
-                viewController: DescriptionViewController(),
-                title: "Description",
-                image: UIImage(systemName: "description.fill")
+                viewController: ForecastViewController(),
+                title: "Forecast",
+                image: UIImage(systemName: "forecast.fill")
             )]
     }
     

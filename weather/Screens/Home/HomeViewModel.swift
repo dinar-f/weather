@@ -26,7 +26,7 @@ class HomeViewModel {
             switch result {
             case .success(let weatherResponse):
                 let roundedTemperature = String(Int(round(weatherResponse.main.temp)))
-                let roundedFeelsLike = Int(round(weatherResponse.main.feels_like))
+                let roundedFeelsLike = Int(round(weatherResponse.main.feelsLike))
                 let cityName = weatherResponse.name
                 let condition = weatherResponse.weather[0].main
                 self.weatherInfo = WeatherInfo(cityName: cityName, temperature: roundedTemperature, feelsLike: roundedFeelsLike, condition: condition)

@@ -13,7 +13,7 @@ enum CitiesTarget {
 
 extension CitiesTarget: TargetType {
     var baseURL: URL {
-        return URL(string: Constants.CitiesApi.URL)!
+        return URL(string: Constants.CitiesApi.url)!
     }
     
     var path: String {
@@ -31,7 +31,7 @@ extension CitiesTarget: TargetType {
     }
     
     var headers: [String: String]? {
-        return ["Authorization": "Token \(Constants.CitiesApi.ApiKey)",
+        return ["Authorization": "Token \(Constants.CitiesApi.apiKey)",
                 "Content-Type": "application/json"]
     }
     
@@ -40,7 +40,7 @@ extension CitiesTarget: TargetType {
         case let .fetchCities(query):
             let parameters: [String: Any] = [
                 "query": query,
-                "count": 10
+                "count": 1
             ]
             return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
         }

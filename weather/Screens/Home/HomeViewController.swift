@@ -8,10 +8,11 @@
 import UIKit
 import SnapKit
 
-class HomeViewController: UIViewController{
+class HomeViewController: BaseViewController{
     var backgroundImage = UIImageView()
     private let viewModel = HomeViewModel()
     var dayTime: DayTime?
+    let userDefaults = UserDefaultManager()
     
     var citylabel: UILabel = {
         let label = UILabel()
@@ -46,14 +47,16 @@ class HomeViewController: UIViewController{
     
     private func fetchUserLocation() {
         viewModel.getMainWeather(){ result in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
                 switch result {
                 case .success:
                     if let weatherInfo = self.viewModel.weatherInfo {
                         self.addWeatherDislaying(weatherInfo: weatherInfo)
+                        saveCurrentCityInfo(city: weatherInfo.cityName, temperature: weatherInfo.temperature)
                     }
                 case .failure(let error):
-                    AlertModalView.showAlert(on: self, title: "Eroor", message: "\(error.localizedDescription)")
+                    self.showAlert(title: "Error", message: "\(error.localizedDescription)")
                 }
             }
         }
@@ -64,6 +67,21 @@ class HomeViewController: UIViewController{
         let navigationController = UINavigationController(rootViewController: searchVC)
         searchVC.delegate = self
         present(navigationController, animated: true, completion: nil)
+    }
+    
+    func saveCurrentCityInfo(city: String, temperature: String) {
+        userDefaults.saveValue(city, forKey: "Cityname")
+        userDefaults.saveValue(temperature, forKey: "CityTemp")
+    }
+    
+    func getCurrentCityInfo() {
+        let city: String? = userDefaults.getValue(forKey: "Cityname")
+        let temp: String? = userDefaults.getValue(forKey: "CityTemp")
+        guard let city, let temp else { return }
+        self.citylabel.isHidden = false
+        self.citylabel.text = city
+        self.cityTemp.isHidden = false
+        self.cityTemp.text = "\(temp)°C"
     }
     
     private func addWeatherDislaying(weatherInfo: WeatherInfo) {
@@ -81,6 +99,7 @@ class HomeViewController: UIViewController{
         setupLayuot()
         getDayTime()
         getBackgroundImage()
+        getCurrentCityInfo()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -153,7 +172,7 @@ extension HomeViewController: SearchViewControllerDelegate {
                         self.addWeatherDislaying(weatherInfo: weatherInfo)
                     }
                 case .failure(let error):
-                    AlertModalView.showAlert(on: self, title: "Error", message: "\(error.localizedDescription)")
+                    self.showAlert(title: "Error", message: "\(error.localizedDescription)")
                 }
             }
         }

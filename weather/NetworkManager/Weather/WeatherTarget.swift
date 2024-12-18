@@ -13,7 +13,7 @@ enum WeatherTarget {
 
 extension WeatherTarget: TargetType {
     var baseURL: URL {
-        return URL(string: Constants.WeatherApi.URL)!
+        return URL(string: Constants.WeatherApi.url)!
     }
     
     var path: String {
@@ -41,7 +41,7 @@ extension WeatherTarget: TargetType {
                 "lat": latitude,
                 "lon": longitude,
                 "units": "metric",
-                "appid": Constants.WeatherApi.ApiKey
+                "appid": Constants.WeatherApi.apiKey
             ], encoding: URLEncoding.default)
         }
     }
