@@ -11,3 +11,4 @@ struct ForecastInfo {
     let maxTemp: String
     let weekDay: String?
 }
+

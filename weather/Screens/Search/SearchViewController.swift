@@ -12,7 +12,7 @@ protocol SearchViewControllerDelegate: AnyObject {
     func didSelectCity(latitude: Double, longitude: Double)
 }
 
-class SearchViewController: UIViewController {
+class SearchViewController: BaseViewController {
     let viewModel = SearchViewModel()
     weak var delegate : SearchViewControllerDelegate?
     
@@ -53,8 +53,7 @@ class SearchViewController: UIViewController {
                     self.tableView.reloadData()
                 }
             case .failure:
-                print(123)
-//                AlertModalView.showAlert(on: self, title: "Error", message: "Ошибка получения данных. Пожалуйста, попробуйте снова")
+                self.showAlert(title: "Error", message:  "Ошибка получения данных. Пожалуйста, попробуйте снова")
             }
         }
     }

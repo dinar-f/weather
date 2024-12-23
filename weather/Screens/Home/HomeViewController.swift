@@ -8,11 +8,16 @@
 import UIKit
 import SnapKit
 
-class HomeViewController: BaseViewController{
+protocol HomeViewControllerDelegate: AnyObject {
+    func updateLocation(latitude: Double, longitude: Double)
+}
+
+class HomeViewController: BaseViewController {
     var backgroundImage = UIImageView()
     private let viewModel = HomeViewModel()
     var dayTime: DayTime?
     let userDefaults = UserDefaultManager()
+    weak var delegate : HomeViewControllerDelegate?
     
     var citylabel: UILabel = {
         let label = UILabel()
@@ -70,12 +75,12 @@ class HomeViewController: BaseViewController{
     }
     
     func saveCurrentCityInfo(city: String, temperature: String) {
-        userDefaults.saveValue(city, forKey: "Cityname")
+        userDefaults.saveValue(city, forKey: "CityName")
         userDefaults.saveValue(temperature, forKey: "CityTemp")
     }
     
     func getCurrentCityInfo() {
-        let city: String? = userDefaults.getValue(forKey: "Cityname")
+        let city: String? = userDefaults.getValue(forKey: "CityName")
         let temp: String? = userDefaults.getValue(forKey: "CityTemp")
         guard let city, let temp else { return }
         self.citylabel.isHidden = false
@@ -92,6 +97,7 @@ class HomeViewController: BaseViewController{
         self.feeling.isHidden = false
         self.feeling.text = weatherInfo.condition
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
