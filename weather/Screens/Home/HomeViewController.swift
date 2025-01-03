@@ -16,7 +16,6 @@ class HomeViewController: BaseViewController {
     var backgroundImage = UIImageView()
     private let viewModel = HomeViewModel()
     var dayTime: DayTime?
-    let userDefaults = UserDefaultManager()
     weak var delegate : HomeViewControllerDelegate?
     
     var citylabel: UILabel = {
@@ -59,6 +58,9 @@ class HomeViewController: BaseViewController {
                     if let weatherInfo = self.viewModel.weatherInfo {
                         self.addWeatherDislaying(weatherInfo: weatherInfo)
                         saveCurrentCityInfo(city: weatherInfo.cityName, temperature: weatherInfo.temperature)
+                        if let location  = self.viewModel.location {
+                            self.delegate?.updateLocation(latitude: location.latitude, longitude: location.longitude)
+                        }
                     }
                 case .failure(let error):
                     self.showAlert(title: "Error", message: "\(error.localizedDescription)")
@@ -75,13 +77,13 @@ class HomeViewController: BaseViewController {
     }
     
     func saveCurrentCityInfo(city: String, temperature: String) {
-        userDefaults.saveValue(city, forKey: "CityName")
-        userDefaults.saveValue(temperature, forKey: "CityTemp")
+        UserDefaultManager.shared.saveValue(city, forKey: "CityName")
+        UserDefaultManager.shared.saveValue(temperature, forKey: "CityTemp")
     }
     
     func getCurrentCityInfo() {
-        let city: String? = userDefaults.getValue(forKey: "CityName")
-        let temp: String? = userDefaults.getValue(forKey: "CityTemp")
+        let city: String? = UserDefaultManager.shared.getValue(forKey: "CityName")
+        let temp: String? = UserDefaultManager.shared.getValue(forKey: "CityTemp")
         guard let city, let temp else { return }
         self.citylabel.isHidden = false
         self.citylabel.text = city
@@ -98,7 +100,6 @@ class HomeViewController: BaseViewController {
         self.feeling.text = weatherInfo.condition
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         bindViews()
@@ -110,6 +111,10 @@ class HomeViewController: BaseViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         fetchUserLocation()
     }
     

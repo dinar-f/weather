@@ -6,25 +6,26 @@
 //
 
 struct ForecastResponse: Codable {
-    let forecasts: [ForecastData]
+    let list: [ForecastData]
 }
 
 struct ForecastData: Codable {
-    let date: String
-    let parts: Parts
-}
-
-struct Parts: Codable {
-    let day: Day
+    let dateTimeStamp: Int
+    let main: MainData
+    let weather: [WeatherData]
     
-    struct Day: Codable {
-        let daytime: String
-        let condition: String
-        let tempMin: Int
-        let tempMax: Int
-        
-        private enum CodingKeys: String, CodingKey {
-            case daytime, condition, tempMin = "temp_min", tempMax = "temp_max"
-        }
+    private enum CodingKeys: String, CodingKey {
+        case dateTimeStamp = "dt"
+        case main
+        case weather
     }
 }
+
+struct WeatherData: Codable {
+    let icon: String
+}
+
+struct MainData: Codable {
+    let temp: Double
+}
+

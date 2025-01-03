@@ -19,7 +19,7 @@ extension WeatherTarget: TargetType {
     var path: String {
         switch self {
         case .fetchWeather:
-            return "/weather"
+            return Constants.WeatherApi.weaterPath
         }
     }
     

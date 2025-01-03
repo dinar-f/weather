@@ -18,16 +18,11 @@ class SearchViewController: BaseViewController {
     
     var tableView = UITableView()
     
-    var citySearchInput: UITextField = {
-        let input = UITextField()
-        input.placeholder = "Search"
-        input.borderStyle = .roundedRect
-        input.textColor = .black
-        input.backgroundColor = .white
-        input.layer.borderWidth = 1
-        input.layer.cornerRadius = 5
-        input.addTarget(self, action: #selector(textFieldChange(_:)), for: .editingChanged)
-        return input
+    var citySearchInput: UISearchBar = {
+        let searchBar = UISearchBar()
+        searchBar.placeholder = "Search your city"
+        searchBar.searchBarStyle = .default
+        return searchBar
     }()
     
     var messageLabel: UILabel = {
@@ -39,24 +34,6 @@ class SearchViewController: BaseViewController {
         label.numberOfLines = 0
         return label
     }()
-    
-    @objc func textFieldChange(_ textField: UITextField){
-        let text = textField.text ?? ""
-        viewModel.getCitiesList(cityName: text){ result in
-            switch result {
-            case .success(let cities):
-                if cities.isEmpty && !text.isEmpty {
-                    self.showMessage(message: "Не найдено совпадений")
-                } else {
-                    self.messageLabel.isHidden = true
-                    self.tableView.isHidden = false
-                    self.tableView.reloadData()
-                }
-            case .failure:
-                self.showAlert(title: "Error", message:  "Ошибка получения данных. Пожалуйста, попробуйте снова")
-            }
-        }
-    }
     
     private func showMessage(message: String) {
         messageLabel.text = message
@@ -72,6 +49,7 @@ class SearchViewController: BaseViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(CityViewCell.self, forCellReuseIdentifier: "CityCell")
+        citySearchInput.delegate = self
     }
     
     func bindViews() {
@@ -84,7 +62,6 @@ class SearchViewController: BaseViewController {
         citySearchInput.snp.makeConstraints { make in
             make.horizontalEdges.equalToSuperview().inset(25)
             make.top.equalToSuperview().offset(40)
-            make.height.equalTo(60)
         }
         tableView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
@@ -93,6 +70,25 @@ class SearchViewController: BaseViewController {
         messageLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalTo(citySearchInput.snp.bottom).offset(40)
+        }
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.getCitiesList(cityName: searchText) { result in
+            switch result {
+            case .success(let cities):
+                if cities.isEmpty && !searchText.isEmpty {
+                    self.showMessage(message: "Не найдено совпадений")
+                } else {
+                    self.messageLabel.isHidden = true
+                    self.tableView.isHidden = false
+                    self.tableView.reloadData()
+                }
+            case .failure:
+                self.showAlert(title: "Error", message: "Ошибка получения данных. Пожалуйста, попробуйте снова")
+            }
         }
     }
 }

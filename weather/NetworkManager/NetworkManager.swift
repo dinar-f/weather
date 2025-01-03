@@ -11,6 +11,7 @@ import Moya
 
 class NetworkManager {
     private let provider = MoyaProvider<MultiTarget>()
+    static let shared = NetworkManager()
     
     func request<T:Decodable>(target: TargetType, completion: @escaping (Result<T, Error>) -> Void) {
         provider.request(MultiTarget(target)){ result in

@@ -19,7 +19,7 @@ extension CitiesTarget: TargetType {
     var path: String {
         switch self {
         case .fetchCities:
-            return "/suggestions/api/4_1/rs/suggest/address"
+            return Constants.CitiesApi.citiesPath
         }
     }
     
@@ -40,7 +40,7 @@ extension CitiesTarget: TargetType {
         case let .fetchCities(query):
             let parameters: [String: Any] = [
                 "query": query,
-                "count": 1
+                "count": 2
             ]
             return .requestParameters(parameters: parameters, encoding: JSONEncoding.default)
         }

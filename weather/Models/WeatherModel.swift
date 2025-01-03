@@ -16,11 +16,11 @@ struct Main : Codable {
     let feelsLike: Double
     
     private enum CodingKeys : String, CodingKey {
-        case temp, feelsLike = "feels_like"
+        case temp
+        case feelsLike = "feels_like"
     }
 }
 
 struct WeatherCondition: Decodable {
     let main: String
 }
-

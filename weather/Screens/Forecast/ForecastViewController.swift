@@ -9,7 +9,8 @@ import UIKit
 import SnapKit
 
 class ForecastViewController: BaseViewController {
-    private let viewModel =  ForecastViewModel()
+    let viewModel =  ForecastViewModel()
+    weak var delegate: HomeViewControllerDelegate?
     
     private let collectionView: UICollectionView = {
         let collectionViewLayout = UICollectionViewLayout()
@@ -22,24 +23,13 @@ class ForecastViewController: BaseViewController {
         bindViews()
         setupLayuot()
         setDelegates()
-        collectionView.register(DayCell.self, forCellWithReuseIdentifier: "DayCell")
-        collectionView.register(TomorrowCell.self, forCellWithReuseIdentifier: "TomorrowCell")
+        collectionView.register(ForecastCell.self, forCellWithReuseIdentifier: "ForecastCell")
         collectionView.collectionViewLayout = createlayout()
     }
     
     func setDelegates() {
         collectionView.dataSource = self
         collectionView.delegate = self
-    }
-    
-//    func fetchForecastWeather() {
-//        viewModel.getforecast(latitude: 37.7858, longitude: -122.4064){ result in
-//            self.collectionView.reloadData()
-//        }
-//    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     func bindViews() {
@@ -67,7 +57,7 @@ extension ForecastViewController {
     }
     
     private func createTomorrowSection() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.6))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.5))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(0.3))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
@@ -77,9 +67,9 @@ extension ForecastViewController {
     }
     
     private func createForecastSection() -> NSCollectionLayoutSection {
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .absolute(100))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(100))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension:.fractionalHeight(0.2))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item, item])
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -87,43 +77,10 @@ extension ForecastViewController {
     }
 }
 
-
-extension ForecastViewController: UICollectionViewDataSource, UICollectionViewDelegate {
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        } else {
-            return 6
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.section == 0 {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TomorrowCell", for: indexPath) as? TomorrowCell else { return UICollectionViewCell() }
-            if !viewModel.forecastsList.isEmpty {
-                cell.configureCell(forecast: viewModel.forecastsList[0])
-            }
-            return cell
-        } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DayCell", for: indexPath) as? DayCell else { return UICollectionViewCell() }
-            let forecastIndex = indexPath.item + 1
-            if forecastIndex < viewModel.forecastsList.count {
-                cell.configureCell(forecast: viewModel.forecastsList[forecastIndex])
-            }
-            return cell
-        }
-    }
-}
-
 extension ForecastViewController: HomeViewControllerDelegate {
     func updateLocation(latitude: Double, longitude: Double) {
-        viewModel.getforecast(latitude: latitude, longitude: longitude){ result in
-            self.collectionView.reloadData()
+        viewModel.getforecast(latitude: latitude, longitude: longitude) { [weak self] result in
+            self?.collectionView.reloadData()
         }
     }
 }

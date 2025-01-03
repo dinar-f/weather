@@ -22,6 +22,9 @@ struct CityData : Codable {
     let region: String?
     
     private enum CodingKeys : String, CodingKey {
-        case city, latitude = "geo_lat", longitude = "geo_lon", region = "region_with_type"
+        case city
+        case latitude = "geo_lat"
+        case longitude = "geo_lon"
+        case region = "region_with_type"
     }
 }

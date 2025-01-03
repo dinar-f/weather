@@ -6,9 +6,9 @@
 //
 
 struct ForecastInfo {
-    let date: String
-    let minTemp: String
-    let maxTemp: String
-    let weekDay: String?
+    let temp: Int
+    let time: String
+    let weekDay: String
+    let icon: String
 }
 

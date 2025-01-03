@@ -13,13 +13,13 @@ enum ForecastTarget {
 
 extension ForecastTarget: TargetType {
     var baseURL: URL {
-        return URL(string: Constants.ForecastApi.url)!
+        return URL(string: Constants.WeatherApi.url)!
     }
     
     var path: String {
         switch self {
         case .fetchForecast:
-            return "/forecast"
+            return Constants.WeatherApi.forecastPath
         }
     }
     
@@ -31,9 +31,7 @@ extension ForecastTarget: TargetType {
     }
     
     var headers: [String: String]? {
-        return [
-            "Content-Type": "application/json",
-            "X-Yandex-Weather-Key": Constants.ForecastApi.apiKey]
+        return ["Content-Type": "application/json"]
     }
     
     var task: Task {
@@ -42,9 +40,9 @@ extension ForecastTarget: TargetType {
             return .requestParameters(parameters: [
                 "lat": latitude,
                 "lon": longitude,
-                "limit": 7,
+                "units": "metric",
+                "appid": Constants.WeatherApi.apiKey
             ], encoding: URLEncoding.default)
         }
     }
 }
-

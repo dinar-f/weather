@@ -6,7 +6,7 @@
 //
 
 class ForecastService {
-    let networkManager = NetworkManager()
+    let networkManager = NetworkManager.shared
     
     func getForecast(latitude: Double, longitude: Double, completion: @escaping ((Result<ForecastResponse, Error>) -> Void)){
         networkManager.request(target: ForecastTarget.fetchForecast(latitude: latitude, longitude: longitude), completion: { result in

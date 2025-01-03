@@ -8,7 +8,8 @@
 import UIKit
 
 class UserDefaultManager {
-
+    static let shared = UserDefaultManager()
+    
     func saveValue<T>(_ value: T, forKey key: String) {
         UserDefaults.standard.set(value, forKey: key)
     }

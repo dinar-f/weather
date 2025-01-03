@@ -6,7 +6,7 @@
 //
 
 class CitiesService {
-    let networkManager = NetworkManager()
+    let networkManager = NetworkManager.shared
     
     func getCities(query: String, completion: @escaping ((Result<DadataResponse, Error>) -> Void)){
         networkManager.request(target: CitiesTarget.fetchCities(query: query), completion: { result in

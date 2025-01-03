@@ -4,23 +4,24 @@
 //
 //  Created by Dinar on 18.11.2024.
 //
-
 import CoreLocation
 
 class HomeViewModel {
     private let locationService = LocationService()
     private let weatherService = WeatherService()
+    var location: CLLocationCoordinate2D?
     var weatherInfo: WeatherInfo?
     
     func getMainWeather(completion: @escaping (Result<Void, Error>) -> Void) {
         locationService.requestLocation{ [weak self] coordinates in
             guard let self = self else { return }
+            self.location = coordinates
             loadWeather(latitude: coordinates.latitude, longitude: coordinates.longitude) { result in
                 completion(result)
             }
         }
     }
-    
+
     func loadWeather(latitude:Double, longitude:Double, completion: @escaping (Result<Void, Error>) -> Void) {
         self.weatherService.getWeather(latitude: latitude, longitude: longitude ){ result in
             switch result {

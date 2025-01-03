@@ -6,7 +6,7 @@
 //
 
 class WeatherService {
-    let networkManager = NetworkManager()
+    let networkManager = NetworkManager.shared
     
     func getWeather(latitude: Double, longitude: Double, completion: @escaping ((Result<WeatherResponse, Error>) -> Void)){
         networkManager.request(target: WeatherTarget.fetchWeather(latitude: latitude, longitude: longitude), completion: { result in
