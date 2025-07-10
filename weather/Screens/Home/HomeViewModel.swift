@@ -4,6 +4,7 @@
 //
 //  Created by Dinar on 18.11.2024.
 //
+
 import CoreLocation
 
 class HomeViewModel {

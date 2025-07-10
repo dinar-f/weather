@@ -15,13 +15,13 @@ struct CitySuggestion: Codable {
     let data: CityData
 }
 
-struct CityData : Codable {
+struct CityData: Codable {
     let city: String?
     let latitude: String?
     let longitude: String?
     let region: String?
     
-    private enum CodingKeys : String, CodingKey {
+    private enum CodingKeys: String, CodingKey {
         case city
         case latitude = "geo_lat"
         case longitude = "geo_lon"

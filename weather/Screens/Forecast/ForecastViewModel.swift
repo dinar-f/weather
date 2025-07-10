@@ -9,7 +9,6 @@ import Foundation
 
 class ForecastViewModel {
     private let forecastService = ForecastService()
-    let dateFormatterService = DateFormatterService.shared
     var forecastsList: [ForecastInfo] = []
     
     func getforecast(latitude: Double, longitude: Double, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -18,8 +17,8 @@ class ForecastViewModel {
             case .success(let response):
                 self.forecastsList = response.list.prefix(7).compactMap { forecast in
                     let temp = Int(round(forecast.main.temp))
-                    let time = self.dateFormatterService.timeStringFromTimeStamp(timeStamp: forecast.dateTimeStamp)
-                    let weekDay = self.dateFormatterService.weekStringFromimeStamp(timeStamp: forecast.dateTimeStamp)
+                    let time = forecast.dateTimeStamp.timeStringFromTimeStamp()
+                    let weekDay = forecast.dateTimeStamp.weekStringFromimeStamp()
                     let icon = forecast.weather[0].icon
                     return ForecastInfo(
                         temp: temp,

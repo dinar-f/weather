@@ -46,7 +46,7 @@ class ForecastCell: UICollectionViewCell {
         timeLabel.text = forecast.time
         dateLabel.text = forecast.weekDay
         tempLabel.text = "\(forecast.temp)°C"
-        weatherIcon.image = UIImage(named: forecast.icon)
+        weatherIcon.image = UIImage(named: forecast.icon) //kingFisher
     }
     
     func bindViews() {

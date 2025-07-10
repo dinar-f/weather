@@ -14,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         DBDebugToolkit.setup()
         // Override point for customization after application launch.
+        
+        CoreDataManager.configure(withModelName: "CoreData") // Инициализируем Core Data
         return true
     }
 

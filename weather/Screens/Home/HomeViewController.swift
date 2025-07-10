@@ -12,11 +12,12 @@ protocol HomeViewControllerDelegate: AnyObject {
     func updateLocation(latitude: Double, longitude: Double)
 }
 
-class HomeViewController: BaseViewController {
-    var backgroundImage = UIImageView()
+final class HomeViewController: BaseViewController {
+    private var backgroundImage = UIImageView()
     private let viewModel = HomeViewModel()
     var dayTime: DayTime?
     weak var delegate : HomeViewControllerDelegate?
+    let userDefault = UserDefaultManager.shared
     
     var citylabel: UILabel = {
         let label = UILabel()
@@ -42,31 +43,25 @@ class HomeViewController: BaseViewController {
         return label
     }()
     
-    var searchButton: UIButton = {
+    lazy var searchButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "search"), for: .normal)
         button.addTarget(self, action: #selector (openSearchView), for: .touchUpInside)
         return button
     }()
     
-    private func fetchUserLocation() {
-        viewModel.getMainWeather(){ result in
-            DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                switch result {
-                case .success:
-                    if let weatherInfo = self.viewModel.weatherInfo {
-                        self.addWeatherDislaying(weatherInfo: weatherInfo)
-                        saveCurrentCityInfo(city: weatherInfo.cityName, temperature: weatherInfo.temperature)
-                        if let location  = self.viewModel.location {
-                            self.delegate?.updateLocation(latitude: location.latitude, longitude: location.longitude)
-                        }
-                    }
-                case .failure(let error):
-                    self.showAlert(title: "Error", message: "\(error.localizedDescription)")
-                }
-            }
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        bindViews()
+        setupLayuot()
+        getDayTime()
+        getBackgroundImage()
+        getCurrentCityInfo()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchUserLocation()
     }
     
     @objc private func openSearchView() {
@@ -76,15 +71,23 @@ class HomeViewController: BaseViewController {
         present(navigationController, animated: true, completion: nil)
     }
     
-    func saveCurrentCityInfo(city: String, temperature: String) {
-        UserDefaultManager.shared.saveValue(city, forKey: "CityName")
-        UserDefaultManager.shared.saveValue(temperature, forKey: "CityTemp")
-    }
+//    func saveCurrentCityInfo(city: String, temperature: String) {
+//        UserDefaultManager.shared.saveValue(city, forKey: "CityName")
+//        UserDefaultManager.shared.saveValue(temperature, forKey: "CityTemp")
+//    }
     
-    func getCurrentCityInfo() {
-        let city: String? = UserDefaultManager.shared.getValue(forKey: "CityName")
-        let temp: String? = UserDefaultManager.shared.getValue(forKey: "CityTemp")
-        guard let city, let temp else { return }
+    func saveCurrentCityInfo(city: String, temperature: String) {
+        CoreDataManager.shared?.createEntity(entityType: CurrentCityInfo.self) { cityInfo in
+            cityInfo.name = city
+            cityInfo.temperature = temperature
+        }
+    }
+
+    private func getCurrentCityInfo() {
+        let cityInfoArray = CoreDataManager.shared?.fetchEntities(entityType: CurrentCityInfo.self)
+        guard let cityInfo = cityInfoArray?.first,
+              let city = cityInfo.name,
+              let temp = cityInfo.temperature else { return }
         self.citylabel.isHidden = false
         self.citylabel.text = city
         self.cityTemp.isHidden = false
@@ -100,33 +103,36 @@ class HomeViewController: BaseViewController {
         self.feeling.text = weatherInfo.condition
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        bindViews()
-        setupLayuot()
-        getDayTime()
-        getBackgroundImage()
-        getCurrentCityInfo()
+    private func fetchUserLocation() {
+        viewModel.getMainWeather(){ result in
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { return }
+                switch result {
+                case .success:
+                    if let weatherInfo = self.viewModel.weatherInfo {
+                        self.addWeatherDislaying(weatherInfo: weatherInfo)
+                        saveCurrentCityInfo(city: weatherInfo.cityName, temperature: weatherInfo.temperature)
+                        if let location = self.viewModel.location {
+                            self.delegate?.updateLocation(latitude: location.latitude, longitude: location.longitude)
+                        }
+                    }
+                case .failure(let error):
+                    self.showAlert(title: "Error", message: "\(error.localizedDescription)")
+                }
+            }
+        }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    private func bindViews() {
+        view.addSubviews(
+            backgroundImage,
+            citylabel,
+            cityTemp,
+            feeling,
+            searchButton)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        fetchUserLocation()
-    }
-    
-    func bindViews() {
-        view.addSubview(backgroundImage)
-        view.addSubview(citylabel)
-        view.addSubview(cityTemp)
-        view.addSubview(feeling)
-        view.addSubview(searchButton)
-    }
-    
-    func getBackgroundImage() {
+    private func getBackgroundImage() {
         switch dayTime {
         case .morning:
             backgroundImage.image = UIImage(named: dayTime?.rawValue ?? "")
@@ -137,7 +143,7 @@ class HomeViewController: BaseViewController {
         }
     }
     
-    func getDayTime() {
+    private func getDayTime() {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
         case 0...11:
@@ -149,7 +155,7 @@ class HomeViewController: BaseViewController {
         }
     }
     
-    func setupLayuot() {
+    private func setupLayuot() {
         backgroundImage.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
