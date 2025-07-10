@@ -68,7 +68,6 @@ class TabBarController:UITabBarController {
     }
     
     @objc private func didTapCircularTabButton() {
-        print("tap")
         self.selectedIndex = 1
     }
 }

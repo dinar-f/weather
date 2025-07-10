@@ -16,6 +16,19 @@ final class CustomTabBar: UITabBar {
         drawTabBar()
     }
     
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let pointIsInside = super.point(inside: point, with: event)
+        if pointIsInside == false {
+            for subview in subviews {
+                let pointInSubview = subview.convert(point, from: self)
+                if subview.point(inside: pointInSubview, with: event) {
+                    return true
+                }
+            }
+        }
+        return pointIsInside
+    }
+    
     private func drawTabBar() {
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = shapePath()
@@ -34,7 +47,6 @@ final class CustomTabBar: UITabBar {
         
         self.shapeLayer = shapeLayer
         self.circleLayer = circleLayer
-        
     }
     
     private func shapePath() -> CGPath {

@@ -9,8 +9,8 @@ import UIKit
 
 class DateFormatterService {
     static let shared = DateFormatterService()
-    private let timeFormatter: DateFormatter
-    private let weekFormatter: DateFormatter
+    let timeFormatter: DateFormatter
+    let weekFormatter: DateFormatter
 
     init() {
         timeFormatter = DateFormatter()
@@ -21,15 +21,16 @@ class DateFormatterService {
         weekFormatter.locale = Locale(identifier: "ru_RU")
     }
     
-    func timeStringFromTimeStamp(timeStamp: Int) -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(timeStamp))
-        let timeString = timeFormatter.string(from: date)
-        return timeString
-    }
-    
-    func weekStringFromimeStamp(timeStamp: Int) -> String {
-        let date = Date(timeIntervalSince1970: TimeInterval(timeStamp))
-        return weekFormatter.string(from: date)
-    }
+//    func timeStringFromTimeStamp(timeStamp: Int) -> String {
+//        let date = Date(timeIntervalSince1970: TimeInterval(timeStamp))
+//        let timeString = timeFormatter.string(from: date)
+//        return timeString
+//    }
+//    
+//    func weekStringFromimeStamp(timeStamp: Int) -> String {
+//        let date = Date(timeIntervalSince1970: TimeInterval(timeStamp))
+//        return weekFormatter.string(from: date)
+//    }
 }
+
 
